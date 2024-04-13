@@ -34,32 +34,6 @@ class EmployeeCreateView(CreateView):
         instance.first_name = instance.first_name.title()
         instance.last_name = instance.last_name.title()
 
-        '''
-        Verificarea si generarea automata a unei adrese de e-mail in DB dupa combinatia "nume.prenume"
-        '''
-
-        # Se verifica daca angajatul are 2 sau mai multe prenume
-        first_name_parts = instance.first_name.split()
-        if len(first_name_parts) > 1:
-            first_name = first_name_parts[0].lower()
-        else:
-            first_name = instance.first_name.lower()
-
-        # Generarea adresei de email dupa combinatia "prenume.nume@gmail.com"
-        email = f"{first_name}.{instance.last_name.lower()}@gmail.com"
-
-        # Se verifica daca e-mail mai exista in baza de date,
-        # daca mai exista atunci ii va genera e-mail "prenume1.nume" s.a.m.d.
-        existing_emails = Employee.objects.filter(email=email)
-        if existing_emails.exists():
-            index = 1
-            while True:
-                new_email = f"{first_name}{index}.{instance.last_name.lower()}@gmail.com"
-                if not Employee.objects.filter(email=new_email).exists():
-                    email = new_email
-                    break
-                index += 1
-
         # Generarea unui CNP in functie de "Gender" (1 sau 2 sau 5 sau 6), si de data nasterii.
         gender = instance.gender
         birth_date = instance.birth_date
@@ -76,14 +50,12 @@ class EmployeeCreateView(CreateView):
         year = str(birth_date.strftime('%y'))
         month = str(birth_date.month).zfill(2)
         day = str(birth_date.day).zfill(2)
+        cnp_first_sever = cnp_start + year + month + day
 
-        cnp = cnp_start + year + month + day + '000000'
+        cnp_last_six = str(form.cleaned_data['cnp'])
+        new_cnp = cnp_first_sever + cnp_last_six
 
-        while Employee.objects.filter(cnp=cnp).exists():
-            cnp = cnp_start + year + month + day + str(int(cnp[-6:]) + 1).zfill(6)
-
-        instance.cnp = cnp
-        instance.email = email
+        instance.cnp = new_cnp
         instance.save()
         return super().form_valid(form)
 
