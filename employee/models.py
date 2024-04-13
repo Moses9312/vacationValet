@@ -17,8 +17,8 @@ class Employee(models.Model):
 
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
-    cnp = models.IntegerField(blank=False, null=False)
-    email = models.EmailField(max_length=60)
+    cnp = models.IntegerField(blank=False, null=False, unique=True)
+    email = models.EmailField(max_length=60, unique=True)
     active = models.BooleanField(default=True)
     gender = models.CharField(max_length=6, choices=gender_options)
     departament = models.CharField(max_length=11, choices=departament_options)
