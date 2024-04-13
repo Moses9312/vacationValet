@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} Create new employee {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3 style="text-center"> Create new employee</h3>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form }}
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-outline-success">Save</button>
+                            <a href="{% url 'home_page' %}" class="btn btn-outline-danger">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

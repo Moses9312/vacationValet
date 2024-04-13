@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} Employee Details {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 gy-5">
+                <div class="card text-center">
+                    <div class="class-header">
+                        View employee details
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ employee }}</h5>
+                        <p class="card-title">Email: {{ employee.email }}</p>
+                        <p class="card-title">CNP: {{ employee.cnp }}</p>
+                        <p class="card-title">Gender:
+                            {% for option in employee.gender_options %}
+                                {% if option.0 == employee.gender %}
+                                    {{ option.1 }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p class="card-title">Departament:
+                            {% for option in employee.departament_options %}
+                                {% if option.0 == employee.departament %}
+                                    {{ option.1 }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p class="card-title">Start Date: {{ employee.start_date }}</p>
+                        <p class="card-title">End Date: {{ employee.end_date }}</p>
+                        <p class="card-title">Notice Date: {{ employee.notice_date }}</p>
+                        <p class="card-title">Address: {{ employee.address }}</p>
+                        <p class="card-title">Days Off: {{ employee.days_off }}</p>
+                        <a href="{% url 'list-employees' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                    <div class="card-footer text-body-secondary">
+                        Created at: {{ employee.created_at|date:"d-m-Y H:i:s" }} <br>
+                        Updated at: {{ employee.updated_at|date:"d-m-Y H:i:s" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

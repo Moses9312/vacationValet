@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} List of employee {% endblock %}
+
+{% block content %}
+    {#    <div class="container-fluid">#}
+    {#        <div class="row">#}
+    {#            <div class="card">#}
+    {#                <div class="card-header"></div>#}
+    {#                <form method="GET">#}
+    {#                    <div class="card-body">#}
+    {#                        #}
+    {#                    </div>#}
+    {#                    <div class="card-footer">#}
+    {#                        #}
+    {#                    </div>#}
+    {#                </form>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+    <div class="col-md-8 offset-md-2">
+        {% if all_employees %}
+            <table class="table table-striped table-bordered table-sm">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>CNP</th>
+                    <th>Email</th>
+                    <th>Active</th>
+                    <th>Departament</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Notice Date</th>
+                    <th>Address</th>
+                    <th>Is Supervizor</th>
+                    <th>Days Off</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for employee in all_employees %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.first_name }}</td>
+                        <td>{{ employee.last_name }}</td>
+                        <td>{{ employee.cnp }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>
+                            {% if employee.active %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        {% for option in employee.departament_options %}
+                            {% if option.0 == employee.departament %}
+                                <td>{{ option.1 }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{ employee.start_date|date:'d/m/Y' }}</td>
+                        <td>{{ employee.end_date|date:'d/m/Y' }}</td>
+                        <td>{{ employee.notice_date|date:'d/m/Y' }}</td>
+                        <td>{{ employee.address }}</td>
+                        <td>
+                            {% if employee.is_supervisor %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td>{{ employee.days_off }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    More actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'update-employee' employee.id %}">Update</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'delete-employee' employee.id %}">Delete</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'details-employee' employee.id %}">Details</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}
