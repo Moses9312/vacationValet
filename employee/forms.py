@@ -8,11 +8,11 @@ from employee.models import Employee
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'gender', 'birth_date', 'username' ,'departament', 'start_date', 'address']
+        fields = ['first_name', 'last_name', 'gender', 'birth_date', 'username', 'departament', 'start_date', 'address']
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),
             'last_name': TextInput(attrs={'placeholder': 'Enter employee last name', 'class': 'form-control'}),
-            'birth_date': DateInput(attrs={'class': 'form-control', 'type' : 'date'}),
+            'birth_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             # 'cnp': NumberInput(attrs={'placeholder': 'Enter employee personal ID number', 'class': 'form-control'}),
             # 'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'gender': Select(attrs={'class': 'form-control'}),
@@ -41,7 +41,8 @@ class EmployeeForm(forms.ModelForm):
 class EmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'birth_date', 'cnp', 'gender', 'departament', 'start_date', 'address']
+        fields = ['first_name', 'last_name', 'birth_date', 'cnp', 'email', 'gender', 'departament', 'start_date',
+                  'address', 'end_date', 'notice_date', 'days_off']
 
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),

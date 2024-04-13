@@ -12,6 +12,7 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+
 class Employee(AbstractUser):
     gender_options = (
         ('male', 'Male'),
@@ -33,7 +34,7 @@ class Employee(AbstractUser):
     # active = models.BooleanField(default=True)
     gender = models.CharField(max_length=6, choices=gender_options, null=True)
     birth_date = models.DateField(null=True, blank=False)
-    departament = models.ForeignKey(Department,on_delete=models.CASCADE, null=True)
+    departament = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True, blank=True)
     notice_date = models.DateField(null=True, blank=True)
@@ -66,4 +67,3 @@ class TimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
     duration = models.DurationField(default=datetime.timedelta(hours=8))
-
