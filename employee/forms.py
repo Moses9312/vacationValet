@@ -8,20 +8,20 @@ from employee.models import Employee
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        # fields = '__all__'
-        exclude = ['is_supervisor', 'days_off', 'end_date', 'notice_date', 'active', 'email']
+        fields = ['first_name', 'last_name', 'gender', 'birth_date', 'username' ,'departament', 'start_date', 'address']
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),
             'last_name': TextInput(attrs={'placeholder': 'Enter employee last name', 'class': 'form-control'}),
-            'cnp': NumberInput(attrs={'placeholder': 'Enter employee personal ID number', 'class': 'form-control'}),
+            'birth_date': DateInput(attrs={'class': 'form-control', 'type' : 'date'}),
+            # 'cnp': NumberInput(attrs={'placeholder': 'Enter employee personal ID number', 'class': 'form-control'}),
             # 'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'gender': Select(attrs={'class': 'form-control'}),
+            'username': TextInput(attrs={'placeholder': 'Enter employee username', 'class': 'form-control'}),
             'departament': Select(attrs={'class': 'form-control'}),
             'start_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'address': Textarea(
                 attrs={'placeholder': 'State, City, Street, Floor, Apartament... ', 'class': 'form-control',
                        'rows': 3}),
-
 
         }
 
@@ -41,11 +41,12 @@ class EmployeeForm(forms.ModelForm):
 class EmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = '__all__'
+        fields = ['first_name', 'last_name', 'birth_date', 'cnp', 'gender', 'departament', 'start_date', 'address']
 
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),
             'last_name': TextInput(attrs={'placeholder': 'Enter employee last name', 'class': 'form-control'}),
+            'birth_date': DateInput(attrs={'class': 'form-control'}),
             'cnp': NumberInput(attrs={'placeholder': 'Enter employee personal ID number', 'class': 'form-control'}),
             'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'gender': Select(attrs={'class': 'form-control'}),
@@ -59,4 +60,3 @@ class EmployeeUpdateForm(forms.ModelForm):
             'days_off': NumberInput(attrs={'class': 'form-control'})
 
         }
-

@@ -54,11 +54,7 @@
                                 No
                             {% endif %}
                         </td>
-                        {% for option in employee.departament_options %}
-                            {% if option.0 == employee.departament %}
-                                <td>{{ option.1 }}</td>
-                            {% endif %}
-                        {% endfor %}
+                        <td>{{ employee.departament }}</td>
                         <td>{{ employee.start_date|date:'d/m/Y' }}</td>
                         <td>{{ employee.end_date|date:'d/m/Y' }}</td>
                         <td>{{ employee.notice_date|date:'d/m/Y' }}</td>

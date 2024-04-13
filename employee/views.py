@@ -60,6 +60,29 @@ class EmployeeCreateView(CreateView):
                     break
                 index += 1
 
+        # Generarea unui CNP in functie de "Gender" (1 sau 2 sau 5 sau 6), si de data nasterii.
+        gender = instance.gender
+        birth_date = instance.birth_date
+        if gender == 'male':
+            if birth_date.year < 2000:
+                cnp_start = '1'
+            else:
+                cnp_start = '5'
+        else:
+            if birth_date.year < 2000:
+                cnp_start = '2'
+            else:
+                cnp_start = '6'
+        year = str(birth_date.strftime('%y'))
+        month = str(birth_date.month).zfill(2)
+        day = str(birth_date.day).zfill(2)
+
+        cnp = cnp_start + year + month + day + '000000'
+
+        while Employee.objects.filter(cnp=cnp).exists():
+            cnp = cnp_start + year + month + day + str(int(cnp[-6:]) + 1).zfill(6)
+
+        instance.cnp = cnp
         instance.email = email
         instance.save()
         return super().form_valid(form)
@@ -71,7 +94,7 @@ class EmployeeListView(ListView):
     context_object_name = 'all_employees'
 
     def get_queryset(self):
-        return Employee.objects.filter(active=True)
+        return Employee.objects.filter(is_active=True)
 
 
 class EmployeeUpdateView(UpdateView):
