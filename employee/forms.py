@@ -55,7 +55,7 @@ class EmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'email', 'departament',
-                  'start_date', 'end_date', 'address', 'days_off']
+                  'start_date', 'end_date', 'notice_date', 'address', 'days_off']
 
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),
@@ -69,6 +69,7 @@ class EmployeeUpdateForm(forms.ModelForm):
             'departament': Select(attrs={'class': 'form-control'}),
             'start_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'notice_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'address': Textarea(
                 attrs={'placeholder': 'State, City, Street, Floor, Apartament... ', 'class': 'form-control',
                        'rows': 3}),
