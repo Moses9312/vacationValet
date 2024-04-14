@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, View, UpdateView, DetailView
@@ -10,7 +11,7 @@ from employee.models import Employee
 
 # Create your views here.
 
-class EmployeeCreateView(CreateView):
+class EmployeeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'employee/create_employee.html'
     model = Employee
     form_class = EmployeeForm
@@ -61,7 +62,7 @@ class EmployeeCreateView(CreateView):
         return super().form_valid(form)
 
 
-class EmployeeListView(ListView):
+class EmployeeListView(LoginRequiredMixin, ListView):
     template_name = 'employee/list_of_employees.html'
     model = Employee
     context_object_name = 'all_employees'
@@ -81,19 +82,19 @@ class EmployeeListView(ListView):
         return data
 
 
-class EmployeeUpdateView(UpdateView):
+class EmployeeUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'employee/update_employee.html'
     model = Employee
     form_class = EmployeeUpdateForm
     success_url = reverse_lazy('list-employees')
 
 
-class EmployeeDeleteView(DeleteView):
+class EmployeeDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'employee/delete_employee.html'
     model = Employee
     success_url = reverse_lazy('list-employees')
 
 
-class EmployeeDetailView(DetailView):
+class EmployeeDetailView(LoginRequiredMixin, DetailView):
     template_name = 'employee/details_employee.html'
     model = Employee

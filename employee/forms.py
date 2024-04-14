@@ -1,15 +1,17 @@
 from django import forms
-from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea, PasswordInput
 from django.views.generic import DeleteView
 
 from employee.models import Employee
 
 
-class EmployeeForm(forms.ModelForm):
+class EmployeeForm(UserCreationForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'email', 'departament',
-                  'start_date', 'end_date', 'address']
+        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'password1', 'password2',
+                  'email',
+                  'departament', 'start_date', 'end_date', 'address']
         widgets = {
             'first_name': TextInput(attrs={'placeholder': 'Enter employee first name', 'class': 'form-control'}),
             'last_name': TextInput(attrs={'placeholder': 'Enter employee last name', 'class': 'form-control'}),
@@ -18,6 +20,7 @@ class EmployeeForm(forms.ModelForm):
             'gender': Select(attrs={'class': 'form-control'}),
             'birth_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'username': TextInput(attrs={'placeholder': 'Enter employee username', 'class': 'form-control'}),
+            # 'password': PasswordInput(attrs={'placeholder': 'Enter employee password', 'class': 'form-control'}),
             'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'departament': Select(attrs={'class': 'form-control'}),
             'start_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
@@ -50,11 +53,17 @@ class EmployeeForm(forms.ModelForm):
 
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(EmployeeForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs = {'class': 'form-control', 'placeholder': 'Password'}
+        self.fields['password2'].widget.attrs = {'class': 'form-control', 'placeholder': 'Confirm Password'}
+
 
 class EmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'email', 'departament',
+        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'password', 'email',
+                  'departament',
                   'start_date', 'end_date', 'notice_date', 'address', 'days_off']
 
         widgets = {
@@ -65,6 +74,7 @@ class EmployeeUpdateForm(forms.ModelForm):
             'gender': Select(attrs={'class': 'form-control'}),
             'birth_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'username': TextInput(attrs={'placeholder': 'Enter employee username', 'class': 'form-control'}),
+            'password': PasswordInput(attrs={'placeholder': 'Enter employee password', 'class': 'form-control'}),
             'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'departament': Select(attrs={'class': 'form-control'}),
             'start_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
@@ -76,3 +86,10 @@ class EmployeeUpdateForm(forms.ModelForm):
             'days_off': NumberInput(attrs={'class': 'form-control'})
 
         }
+
+
+class AuthenticationNewForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter username'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter password'})
