@@ -14,12 +14,12 @@ class Department(models.Model):
 
 
 class Employee(AbstractUser):
-    gender_options = (
+    GENDER_OPTIONS = (
         ('male', 'Male'),
         ('female', 'Female')
     )
     cnp = models.IntegerField(blank=False, null=True, unique=True)
-    gender = models.CharField(max_length=6, choices=gender_options, null=True)
+    gender = models.CharField(max_length=6, choices=GENDER_OPTIONS, null=True)
     birth_date = models.DateField(null=True, blank=False)
     departament = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     start_date = models.DateField(null=True)

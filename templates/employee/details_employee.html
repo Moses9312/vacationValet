@@ -15,19 +15,13 @@
                         <p class="card-title">Email: {{ employee.email }}</p>
                         <p class="card-title">CNP: {{ employee.cnp }}</p>
                         <p class="card-title">Gender:
-                            {% for option in employee.gender_options %}
+                            {% for option in employee.GENDER_OPTIONS %}
                                 {% if option.0 == employee.gender %}
                                     {{ option.1 }}
                                 {% endif %}
                             {% endfor %}
                         </p>
-                        <p class="card-title">Departament:
-                            {% for option in employee.departament_options %}
-                                {% if option.0 == employee.departament %}
-                                    {{ option.1 }}
-                                {% endif %}
-                            {% endfor %}
-                        </p>
+                        <p class="card-title">Departament: {{ employee.departament }}</p>
                         <p class="card-title">Start Date: {{ employee.start_date }}</p>
                         <p class="card-title">End Date: {{ employee.end_date }}</p>
                         <p class="card-title">Notice Date: {{ employee.notice_date }}</p>

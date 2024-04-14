@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, View, UpdateView, DetailView
 
+from employee.filters import EmployeeFilter
 from employee.forms import EmployeeForm, EmployeeUpdateForm
 from employee.models import Employee
 
@@ -67,6 +68,17 @@ class EmployeeListView(ListView):
 
     def get_queryset(self):
         return Employee.objects.filter(is_active=True)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        employees = Employee.objects.filter(is_active=True)
+        myfilter = EmployeeFilter(self.request.GET, queryset=employees)
+        employees = myfilter.qs
+        data['all_employees'] = employees
+        data['filter'] = myfilter.form
+
+        return data
 
 
 class EmployeeUpdateView(UpdateView):
