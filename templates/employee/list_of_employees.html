@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-2 gy-3">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="text-center">Filters</h3>
@@ -21,7 +21,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-10">
+            <div class="col-md-10 gy-3">
                 {% if all_employees %}
                     <table class="table table-striped table-bordered table-sm">
                         <thead>
@@ -31,7 +31,6 @@
                             <th>Last Name</th>
                             <th>CNP</th>
                             <th>Email</th>
-                            <th>Active</th>
                             <th>Departament</th>
                             <th>Start Date</th>
                             <th>End Date</th>
@@ -50,13 +49,6 @@
                                 <td>{{ employee.last_name }}</td>
                                 <td>{{ employee.cnp }}</td>
                                 <td>{{ employee.email }}</td>
-                                <td>
-                                    {% if employee.active %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
                                 <td>{{ employee.departament }}</td>
                                 <td>{{ employee.start_date|date:'d/m/Y' }}</td>
                                 <td>{{ employee.end_date|date:'d/m/Y' }}</td>
