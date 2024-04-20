@@ -60,3 +60,6 @@ class TimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
     duration = models.DurationField(default=datetime.timedelta(hours=8))
+
+    def __str__(self):
+        return f'{self.employee} {self.date} {self.duration}'

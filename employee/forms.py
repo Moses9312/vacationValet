@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea, PasswordInput
 from django.views.generic import DeleteView
 
-from employee.models import Employee
+from employee.models import Employee, TimeRecord
+import calendar
 
 
 class EmployeeForm(UserCreationForm):
@@ -93,3 +94,20 @@ class AuthenticationNewForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter username'})
         self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter password'})
+
+
+class TimeRecordForm(forms.ModelForm):
+    class Meta:
+        model = TimeRecord
+        fields = '__all__'
+
+        widgets = {
+            'employee': Select(attrs={'class': 'form-control'}),
+            'date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'duration': NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class MonthSelectionForm(forms.Form):
+    months = [(i, calendar.month_name[i]) for i in range(1, 13)]
+    month = forms.ChoiceField(choices=months)

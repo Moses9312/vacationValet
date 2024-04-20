@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load utils %}
+
+{% block title %} Timekeeper {% endblock %}
+
+{% block content %}
+    <h2 class="text-center">Record Time</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Employee</th>
+                {% for day in days %}
+                    <th>{{ day }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.cnp }} {{ employee.first_name }} {{ employee.last_name }}</td>
+                    {% for day in days %}
+                        <td>
+                            <label for="pontaj_{{ employee.id }}_{{ day }}"></label>
+                            {% with pos1=forloop.parentloop.counter0 %}
+                                {% with pos2=forloop.counter0 %}
+                                    <input type="text" value="{{ values|index:pos1|index:pos2 }}"
+                                           name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
+                                           id="pontaj_{{ employee.id }}_{{ day }}" class="form-control">
+                                {% endwith %}
+                            {% endwith %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+{% endblock %}

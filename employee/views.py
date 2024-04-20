@@ -1,12 +1,14 @@
-from django.conf import settings
+import calendar
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DeleteView, View, UpdateView, DetailView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from employee.filters import EmployeeFilter
 from employee.forms import EmployeeForm, EmployeeUpdateForm
-from employee.models import Employee
+from employee.models import Employee, TimeRecord
 
 
 # Create your views here.
@@ -73,7 +75,7 @@ class EmployeeListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
-        employees = Employee.objects.filter(is_active=True)
+        employees = Employee.objects.filter(is_superuser=False)
         myfilter = EmployeeFilter(self.request.GET, queryset=employees)
         employees = myfilter.qs
         data['all_employees'] = employees
@@ -98,3 +100,52 @@ class EmployeeDeleteView(LoginRequiredMixin, DeleteView):
 class EmployeeDetailView(LoginRequiredMixin, DetailView):
     template_name = 'employee/details_employee.html'
     model = Employee
+
+
+def record_time_view(request):
+    employees = Employee.objects.filter(is_superuser=False)
+
+    # Obțineți zilele lunii curente
+    today = datetime.date.today()
+    month = today.month
+    year = today.year
+    num_days = calendar.monthrange(year, month)[1]
+    days = [i for i in range(1, num_days + 1)]
+
+    if request.method == 'POST':
+        for k in request.POST:
+            if k.startswith('pontaj_'):
+                employee_id_and_date = k[7:]
+                employee_id_str, date_str = employee_id_and_date.split('_')
+                hours = request.POST[k]
+                time_record, created = TimeRecord.objects.get_or_create(employee_id=employee_id_str, date=date_str)
+                if hours != '':
+                    time_record.duration = datetime.timedelta(hours=float(hours))
+                    print(employee_id_and_date)
+                    print(f'logged {hours} hours')
+                else:
+                    time_record.duration = datetime.timedelta(hours=0)
+                time_record.save()
+
+    values = []
+    for employee in employees:
+        row = []
+        for day in days:
+            existing_record: TimeRecord = TimeRecord.objects.filter(employee=employee, date__year=year,
+                                                                    date__month=month, date__day=day).first()
+            if existing_record is not None:
+                seconds = existing_record.duration.total_seconds()
+                hours = seconds / 3600
+                # row.append(hours if hours > 0 else '')
+                if hours == 0:
+                    row.append('')
+                elif hours == int(hours):
+                    row.append(int(hours))
+                else:
+                    row.append(hours)
+            else:
+                row.append('')
+        values.append(row)
+
+    return render(request, 'record_time/record_time.html',
+                  {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values})
