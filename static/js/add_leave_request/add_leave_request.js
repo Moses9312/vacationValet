@@ -35,19 +35,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Ascultăm evenimentul de schimbare în câmpul tip care determină ascunderea câmpului de atașament și a etichetei
+    // Ascultam evenimentul de schimbare in campul tip care determina ascunderea campului de atasament si a etichetei
     document.getElementById('id_type').addEventListener('change', showOrHideAttachmentField);
 
-    // La încărcarea paginii, apelăm funcția pentru a asigura afișarea corectă a câmpului de atașament și a etichetei
+    // La încarcarea paginii, apelam functia pentru a asigura afișarea corecta a campului de atasament si a etichetei
     showOrHideAttachmentField();
 
-    // Ascultam evenimentul de schimbare în campul start_date pentru a actualiza min in end_date și pentru a calcula zilele
+    // Event de schimbare în campul start_date pentru a actualiza min in end_date și pentru a calcula zilele
     document.getElementById('id_start_date').addEventListener('change', function () {
         updateEndDateMin();
         calculateDays();
     });
 
-    // Ascultam evenimentul de schimbare în campurile start_date si end_date pentru a calcula zilele
+    //  Event de schimbare in campurile start_date si end_date pentru a calcula zilele
     if (document.getElementById('id_start_date') && document.getElementById('id_end_date')) {
         document.getElementById('id_end_date').addEventListener('change', calculateDays);
     }
