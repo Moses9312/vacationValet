@@ -1,6 +1,7 @@
 import calendar
 import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -102,15 +103,22 @@ class EmployeeDetailView(LoginRequiredMixin, DetailView):
     model = Employee
 
 
+@login_required
 def record_time_view(request):
     employees = Employee.objects.filter(is_superuser=False)
 
-    # Obțineți zilele lunii curente
+    # Obtinem zilele din luna curenta
     today = datetime.date.today()
     month = today.month
     year = today.year
     num_days = calendar.monthrange(year, month)[1]
     days = [i for i in range(1, num_days + 1)]
+
+    # Calcul zile de weekend din luna curenta
+    first_day = datetime.date(year, month, 1)
+    last_day = datetime.date(year, month, num_days)
+    weekend_days = [day for day in range(first_day.day, last_day.day + 1) if
+                    datetime.date(year, month, day).weekday() in [5, 6]]
 
     if request.method == 'POST':
         for k in request.POST:
@@ -136,7 +144,6 @@ def record_time_view(request):
             if existing_record is not None:
                 seconds = existing_record.duration.total_seconds()
                 hours = seconds / 3600
-                # row.append(hours if hours > 0 else '')
                 if hours == 0:
                     row.append('')
                 elif hours == int(hours):
@@ -148,4 +155,5 @@ def record_time_view(request):
         values.append(row)
 
     return render(request, 'record_time/record_time.html',
-                  {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values})
+                  {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
+                   'weekend_days': weekend_days})

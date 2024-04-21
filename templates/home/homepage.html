@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} Home {% endblock %}
-
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/homepage/homepage.css' %}">
+{% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center">Welcome to Vacation Valet !</h1>
+                <h1 class="text-center" id="msg">Welcome to Vacation Valet !</h1>
             </div>
         </div>
     </div>

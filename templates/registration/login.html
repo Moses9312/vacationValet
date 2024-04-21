@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} Login {% endblock %}
-
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login/login.css' %}">
+{% endblock %}
 {% block content %}
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-15">

@@ -1,41 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load utils %}
 
-{% block title %} Timekeeper {% endblock %}
+{% block title %}Timekeeper{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/time_record/time_record.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h2 class="text-center">Record Time</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Employee</th>
-                {% for day in days %}
-                    <th>{{ day }}</th>
-                {% endfor %}
-            </tr>
-            </thead>
-            <tbody>
-            {% for employee in employees %}
+    <h2 class="text-center" id="header-text">Record Time</h2>
+    <div class="scrollable-content">
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <thead class="sticky-header">
                 <tr>
-                    <td>{{ employee.cnp }} {{ employee.first_name }} {{ employee.last_name }}</td>
+                    <th id="empl">Employee</th>
                     {% for day in days %}
-                        <td>
-                            <label for="pontaj_{{ employee.id }}_{{ day }}"></label>
-                            {% with pos1=forloop.parentloop.counter0 %}
-                                {% with pos2=forloop.counter0 %}
-                                    <input type="text" value="{{ values|index:pos1|index:pos2 }}"
-                                           name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
-                                           id="pontaj_{{ employee.id }}_{{ day }}" class="form-control">
-                                {% endwith %}
-                            {% endwith %}
-                        </td>
+                        <th>{{ day }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+                </thead>
+                <tbody class="sticky-content">
+                {% for employee in employees %}
+                    <tr>
+                        <td id="emplrow">{{ employee.cnp }}-{{ employee.first_name }} {{ employee.last_name }}</td>
+                        {% for day in days %}
+                            <td id="boxes">
+                                <label for="pontaj_{{ employee.id }}_{{ day }}"></label>
+                                {% with pos1=forloop.parentloop.counter0 %}
+                                    {% with pos2=forloop.counter0 %}
+                                        <input type="text" value="{{ values|index:pos1|index:pos2 }}"
+                                               name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
+                                               id="pontaj_{{ employee.id }}_{{ day }}"
+                                               class="form-control {% if day in weekend_days %}readonly{% endif %}"
+                                               {% if day in weekend_days %}readonly{% endif %}>
+                                    {% endwith %}
+                                {% endwith %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-center" id="btn">
+                <button type="submit" class="btn btn-success text-center" id="savebtn">Save</button>
+                <a href="{% url 'record-time' %}" class="btn btn-outline-secondary" id="vobtn">Undo</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}
