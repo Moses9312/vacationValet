@@ -38,3 +38,16 @@
 #weekdays{
     background-color: gray;
 }
+
+#year{
+    max-width: 5rem;
+}
+
+#month{
+    max-width: 5rem;
+    margin-right: 10px;
+}
+
+#load{
+
+}
