@@ -49,7 +49,6 @@ class HolidayRequest(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    approved = models.BooleanField(default=False)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
     attachment = models.FileField(upload_to='static/holiday_request/')
     reason = models.TextField(null=True, blank=True)

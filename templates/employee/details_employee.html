@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %} Employee Details {% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/list_of_emloyees/details_employee.css' %}">
+{% endblock %}
 
 {% block content %}
     <div class="container-fluid">

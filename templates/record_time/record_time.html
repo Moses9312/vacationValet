@@ -9,6 +9,20 @@
 {% endblock %}
 
 {% block content %}
+    <form action="" method="get">
+
+        <select name="year" id="">
+            {% for y in years %}
+                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+        <select name="month" id="">
+            {% for m in months %}
+                <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Load</button>
+    </form>
     <h2 class="text-center" id="header-text">Record Time</h2>
     <div class="scrollable-content">
         <form method="POST">
@@ -18,7 +32,7 @@
                 <tr>
                     <th id="empl">Employee</th>
                     {% for day in days %}
-                        <th>{{ day }}</th>
+                        <th id="{% if day in weekend_days %}weekdays{% endif %}">{{ day }}</th>
                     {% endfor %}
                 </tr>
                 </thead>
@@ -27,7 +41,7 @@
                     <tr>
                         <td id="emplrow">{{ employee.cnp }}-{{ employee.first_name }} {{ employee.last_name }}</td>
                         {% for day in days %}
-                            <td id="boxes">
+                            <td id="{% if day in weekend_days %}weekdays{% endif %}">
                                 <label for="pontaj_{{ employee.id }}_{{ day }}"></label>
                                 {% with pos1=forloop.parentloop.counter0 %}
                                     {% with pos2=forloop.counter0 %}

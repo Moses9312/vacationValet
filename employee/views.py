@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from employee.filters import EmployeeFilter
@@ -108,9 +109,11 @@ def record_time_view(request):
     employees = Employee.objects.filter(is_superuser=False)
 
     # Obtinem zilele din luna curenta
-    today = datetime.date.today()
-    month = today.month
-    year = today.year
+    today = timezone.now()
+
+    month = int(request.GET.get('month', today.month))
+    year = int(request.GET.get('year', today.year))
+
     num_days = calendar.monthrange(year, month)[1]
     days = [i for i in range(1, num_days + 1)]
 
@@ -156,4 +159,5 @@ def record_time_view(request):
 
     return render(request, 'record_time/record_time.html',
                   {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
-                   'weekend_days': weekend_days})
+                   'weekend_days': weekend_days, 'years': [2024, 2025],
+                   'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]})

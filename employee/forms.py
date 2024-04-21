@@ -63,7 +63,7 @@ class EmployeeForm(UserCreationForm):
 class EmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'password', 'email',
+        fields = ['first_name', 'last_name', 'cnp', 'gender', 'birth_date', 'username', 'email',
                   'departament',
                   'start_date', 'end_date', 'notice_date', 'address', 'days_off']
 
@@ -75,7 +75,6 @@ class EmployeeUpdateForm(forms.ModelForm):
             'gender': Select(attrs={'class': 'form-control'}),
             'birth_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'username': TextInput(attrs={'placeholder': 'Enter employee username', 'class': 'form-control'}),
-            'password': PasswordInput(attrs={'placeholder': 'Enter employee password', 'class': 'form-control'}),
             'email': EmailInput(attrs={'placeholder': 'Enter employee email', 'class': 'form-control'}),
             'departament': Select(attrs={'class': 'form-control'}),
             'start_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
