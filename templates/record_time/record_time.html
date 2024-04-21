@@ -10,22 +10,26 @@
 
 {% block content %}
     <form action="" method="get">
-    <div class="row">
-        <div class="col">
-        <select name="year" id="year" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example">
-            {% for y in years %}
-                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
-            {% endfor %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="col-2">
+                    <select name="year" id="year" class="form-select form-select-sm mb-1"
+                            aria-label=".form-select-lg example">
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select name="month" id="month" class="form-select form-select-sm mb-1"
+                            aria-label=".form-select-lg example">
+                        {% for m in months %}
+                            <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="col">
-        </select>
-        <select name="month" id="month" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example">
-            {% for m in months %}
-                <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
-            {% endfor %}
-        </select>
-        </div>
-    </div>
         <button type="submit" class="btn btn-success" id="load">Load</button>
     </form>
     <h2 class="text-center" id="header-text">Record Time</h2>

@@ -45,9 +45,9 @@
 
 #month{
     max-width: 5rem;
-    margin-right: 10px;
+    margin-right: 1rem;
 }
 
 #load{
-
+    max-height: 3rem;
 }

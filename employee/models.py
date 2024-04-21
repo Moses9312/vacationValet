@@ -54,6 +54,9 @@ class HolidayRequest(models.Model):
     reason = models.TextField(null=True, blank=True)
     approval_status = models.CharField(max_length=50, choices=APPROVAL_CHOICES, default='pending')
 
+    def __str__(self):
+        return f'{self.employee} {self.start_date} {self.end_date}'
+
 
 class TimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -61,4 +64,4 @@ class TimeRecord(models.Model):
     duration = models.DurationField(default=datetime.timedelta(hours=8))
 
     def __str__(self):
-        return f'{self.employee} {self.date} {self.duration}'
+        return f'{self.employee}{self.date} {self.duration}'

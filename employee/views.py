@@ -9,8 +9,8 @@ from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from employee.filters import EmployeeFilter
-from employee.forms import EmployeeForm, EmployeeUpdateForm
-from employee.models import Employee, TimeRecord
+from employee.forms import EmployeeForm, EmployeeUpdateForm, HolidayRequestForm
+from employee.models import Employee, TimeRecord, HolidayRequest
 
 
 # Create your views here.
@@ -161,3 +161,10 @@ def record_time_view(request):
                   {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
                    'weekend_days': weekend_days, 'years': [2024, 2025],
                    'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]})
+
+
+class HolidayRequestCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'rest_holidays/add_leave_request.html'
+    model = HolidayRequest
+    form_class = HolidayRequestForm
+    success_url = reverse_lazy('add-leave-request')

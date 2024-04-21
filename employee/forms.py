@@ -1,9 +1,11 @@
+from datetime import date, timedelta
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea, PasswordInput
+from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea, PasswordInput, FileInput
 from django.views.generic import DeleteView
 
-from employee.models import Employee, TimeRecord
+from employee.models import Employee, TimeRecord, HolidayRequest
 import calendar
 
 
@@ -110,3 +112,21 @@ class TimeRecordForm(forms.ModelForm):
 class MonthSelectionForm(forms.Form):
     months = [(i, calendar.month_name[i]) for i in range(1, 13)]
     month = forms.ChoiceField(choices=months)
+
+
+class HolidayRequestForm(forms.ModelForm):
+    class Meta:
+        model = HolidayRequest
+        exclude = ['approval_status']
+
+        widgets = {
+            'employee': Select(attrs={'class': 'form-control'}),
+            'start_date': DateInput(
+                attrs={'class': 'form-control', 'type': 'date', 'id': 'id_start_date', 'min': str(date.today())}),
+            'end_date': DateInput(
+                attrs={'class': 'form-control', 'type': 'date', 'id': 'id_end_date',
+                       'min': str(date.today())}),
+            'type': Select(attrs={'class': 'form-control'}),
+            'attachment': FileInput(attrs={'class': 'form-control'}),
+            'reason': TextInput(attrs={'class': 'form-control'})
+        }
