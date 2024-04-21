@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}List Requests{% endblock %}
+
+{% block head %}
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'css/add_leave_request/approve_leave_request.css' %}">#}
+    {#    <script type="text/javascript" src={% static "js/add_leave_request/approve_leave_request.js" %}></script>#}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-10 gy-3">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Type</th>
+                <th>Reason</th>
+                <th>Approved Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for holiday in holiday_requests %}
+                <tr>
+                    <td>{{ holiday.employee_id }}</td>
+                    <td>{{ holiday.start_date }}</td>
+                    <td>{{ holiday.end_date }}</td>
+                    <td>{{ holiday.type }}</td>
+                    <td>{{ holiday.reason }}</td>
+                    <td>{{ holiday.approval_status }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

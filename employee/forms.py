@@ -130,3 +130,21 @@ class HolidayRequestForm(forms.ModelForm):
             'attachment': FileInput(attrs={'class': 'form-control', 'id': 'id_attachment'}),
             'reason': TextInput(attrs={'class': 'form-control'})
         }
+
+
+class HolidayRequestUpdateForm(forms.ModelForm):
+    class Meta:
+        model = HolidayRequest
+        fields = '__all__'
+
+        widgets = {
+            'employee': Select(attrs={'class': 'form-control'}),
+            'start_date': DateInput(
+                attrs={'class': 'form-control', 'type': 'date', 'id': 'id_start_date', 'min': str(date.today())}),
+            'end_date': DateInput(
+                attrs={'class': 'form-control', 'type': 'date', 'id': 'id_end_date',
+                       'min': str(date.today())}),
+            'type': Select(attrs={'class': 'form-control', 'id': 'id_type'}),
+            'attachment': FileInput(attrs={'class': 'form-control', 'id': 'id_attachment'}),
+            'reason': TextInput(attrs={'class': 'form-control'})
+        }

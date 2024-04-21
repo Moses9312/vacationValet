@@ -168,3 +168,16 @@ class HolidayRequestCreateView(LoginRequiredMixin, CreateView):
     model = HolidayRequest
     form_class = HolidayRequestForm
     success_url = reverse_lazy('add-leave-request')
+
+
+class HolidayRequestUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'rest_holidays/approve_leave_request.html'
+    model = HolidayRequest
+    form_class = HolidayRequestForm
+    success_url = reverse_lazy('home_page')
+
+
+class HolidayRequestListView(LoginRequiredMixin, ListView):
+    template_name = 'rest_holidays/holiday_request_list.html'
+    model = HolidayRequest
+    context_object_name = 'holiday_requests'
