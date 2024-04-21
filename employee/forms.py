@@ -126,7 +126,7 @@ class HolidayRequestForm(forms.ModelForm):
             'end_date': DateInput(
                 attrs={'class': 'form-control', 'type': 'date', 'id': 'id_end_date',
                        'min': str(date.today())}),
-            'type': Select(attrs={'class': 'form-control'}),
-            'attachment': FileInput(attrs={'class': 'form-control'}),
+            'type': Select(attrs={'class': 'form-control', 'id': 'id_type'}),
+            'attachment': FileInput(attrs={'class': 'form-control', 'id': 'id_attachment'}),
             'reason': TextInput(attrs={'class': 'form-control'})
         }
