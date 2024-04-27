@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
-from employee.filters import EmployeeFilter
+from employee.filters import EmployeeFilter, HolidayFilter
 from employee.forms import EmployeeForm, EmployeeUpdateForm, HolidayRequestForm
 from employee.models import Employee, TimeRecord, HolidayRequest, Department
 
@@ -106,15 +106,16 @@ class EmployeeDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def record_time_view(request):
-    # supervisor = Employee.objects.get(id=request.user.id)
-    # if supervisor.is_supervisor:
-    #     department = supervisor.departament
-    #     employees = Employee.objects.filter(departament=department, is_superuser=False)
-    # else:
-    #     # Tratează cazul în care utilizatorul autentificat nu este un supervizor
-    #     employees = []
+    current_user = request.user  # Utilizatorul logat
+    current_employee = Employee.objects.get(username=current_user.username)
+    department = current_employee.departament
 
-    employees = Employee.objects.filter(is_superuser=False)
+    if current_user.is_superuser:
+        # Dacă utilizatorul este admin, obținem toti angajatii
+        employees = Employee.objects.filter(is_superuser=False)
+    else:
+        # Altfel, obținem angajații din același departament cu angajatul curent
+        employees = Employee.objects.filter(departament=department, is_superuser=False)
 
     # Obtinem zilele din luna curenta
     today = timezone.now()
@@ -191,22 +192,33 @@ class HolidayRequestListView(LoginRequiredMixin, ListView):
     context_object_name = 'holiday_requests'
 
     def get_queryset(self):
-        departaments = Department.objects.filter(supervisor=self.request.user)
-        members = Employee.objects.filter(department__in=departaments)
-        requests = HolidayRequest.objects.filter(employee__in=members)
-        return requests
+        if self.request.user.is_superuser:
+            return HolidayRequest.objects.all()
+        else:
+            departaments = Department.objects.filter(supervisor=self.request.user)
+            members = Employee.objects.filter(department__in=departaments)
+            requests = HolidayRequest.objects.filter(employee__in=members)
+            return requests
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        requests = HolidayRequest.objects.all()
+        myfilter = HolidayFilter(self.request.GET, queryset=requests)
+        requests = myfilter.qs
+        data['holiday_requests'] = requests
+        data['filter'] = myfilter.form
+
+        return data
 
 
 def approve_requests(request):
     id = request.POST.get('id')
     approve = int(request.POST.get('approve', 0))
-    print(id, approve)
     holiday_request = HolidayRequest.objects.get(id=id)
     if approve == 1:
-        print('approving')
         holiday_request.approval_status = 'approved'
     else:
-        print('rejecting')
         holiday_request.approval_status = 'rejected'
     holiday_request.save()
     return redirect('list-requests')

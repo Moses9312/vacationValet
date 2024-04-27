@@ -2,7 +2,9 @@ import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import pre_save
 from django.utils import timezone
+from django.dispatch import receiver
 
 
 class Department(models.Model):
@@ -26,13 +28,46 @@ class Employee(AbstractUser):
     end_date = models.DateField(null=True, blank=True)
     notice_date = models.DateField(null=True, blank=True)
     address = models.TextField(blank=True, null=True)
-    is_supervisor = models.BooleanField(default=False)
+    is_supervisor = models.BooleanField(default=False, blank=True, null=True)
     days_off = models.IntegerField(default=21, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'  # Implicit mostenite din clasa AbstractUser
+
+    # @property - este folosit pentru a defini o metoda a unei clase ca si atribut de tip proprietate.
+    @property
+    def full_name(self) -> str:
+        return f'{self.first_name} {self.last_name}'
+
+    @property
+    def is_supervisor(self):
+        # Verifică dacă angajatul este supraveghetor pentru vreun departament
+        return Department.objects.filter(supervisor=self).exists()
+
+    @property
+    def supervisor_departments(self):
+        # Returnează lista de departamente pentru care angajatul este supraveghetor
+        return Department.objects.filter(supervisor=self)
+
+    @property
+    def calculate_holiday_days(self):
+        if self.start_date:
+            # Se calculeaza nr de luni de la angajare pana in ziua curenta.
+            today = timezone.now().date()
+            months_since_start = (today.year - self.start_date.year) * 12 + (today.month - self.start_date.month)
+
+            # Se calculeaza nr de zile in functie de nr de luni
+            total_holiday_days = round(months_since_start * 1.75)
+            return total_holiday_days
+        else:
+            return 0
+
+
+@receiver(pre_save, sender=Employee)
+def update_employee_holiday_days(sender, instance, **kwargs):
+    instance.days_off = instance.calculate_holiday_days
 
 
 class HolidayRequest(models.Model):
@@ -50,7 +85,7 @@ class HolidayRequest(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    attachment = models.FileField(upload_to='static/holiday_request/')
+    attachment = models.FileField(upload_to='holiday_request/')
     reason = models.TextField(null=True, blank=True)
     approval_status = models.CharField(max_length=50, choices=APPROVAL_CHOICES, default='pending')
 

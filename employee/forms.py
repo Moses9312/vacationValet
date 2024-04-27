@@ -150,7 +150,8 @@ class HolidayRequestUpdateForm(forms.ModelForm):
                        'min': str(date.today())}),
             'type': Select(attrs={'class': 'form-control', 'id': 'id_type'}),
             'attachment': FileInput(attrs={'class': 'form-control', 'id': 'id_attachment'}),
-            'reason': TextInput(attrs={'class': 'form-control'})
+            'reason': TextInput(attrs={'class': 'form-control'}),
+            'approval_status': Select(attrs={'class': 'form-control', 'id': 'id_approval_status'}),
         }
 
 

@@ -3,9 +3,9 @@
     background-color: whitesmoke;
 }
 
-#empl {
-    background-color: #0275d8
-}
+/*#empl {*/
+/*    background-color: #0275d8;*/
+/*}*/
 
 .form-control {
     width: 3rem !important;
@@ -35,19 +35,27 @@
     z-index: 1;
 }
 
-#weekdays{
+#weekdays {
     background-color: gray;
 }
 
-#year{
+#year {
     max-width: 5rem;
 }
 
-#month{
+#month {
     max-width: 5rem;
     margin-right: 1rem;
 }
 
-#load{
+#load {
     max-height: 3rem;
 }
+
+.sticky-header th{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+

@@ -39,7 +39,7 @@
             <table class="table table-bordered">
                 <thead class="sticky-header">
                 <tr>
-                    <th id="empl">Employee</th>
+                    <th>Employee</th>
                     {% for day in days %}
                         <th id="{% if day in weekend_days %}weekdays{% endif %}">{{ day }}</th>
                     {% endfor %}
