@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.forms import TextInput, NumberInput, EmailInput, Select, DateInput, Textarea, PasswordInput, FileInput
 from django.views.generic import DeleteView
 
@@ -131,6 +131,10 @@ class HolidayRequestForm(forms.ModelForm):
             'reason': TextInput(attrs={'class': 'form-control'})
         }
 
+    def __init__(self, *args, **kwargs):
+        super(HolidayRequestForm, self).__init__(*args, **kwargs)
+        self.fields['attachment'].required = False
+
 
 class HolidayRequestUpdateForm(forms.ModelForm):
     class Meta:
@@ -148,3 +152,10 @@ class HolidayRequestUpdateForm(forms.ModelForm):
             'attachment': FileInput(attrs={'class': 'form-control', 'id': 'id_attachment'}),
             'reason': TextInput(attrs={'class': 'form-control'})
         }
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            self.fields[field_name].widget.attrs['class'] = 'form-control form-control-sm'

@@ -16,7 +16,7 @@
                     <div class="card-header text-center">
                         <h3>Add new leave request</h3>
                     </div>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data">
                         <div class="card-body">
                             {% csrf_token %}
                             {{ form }}<br>

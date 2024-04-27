@@ -5,24 +5,27 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/login/login.css' %}">
 {% endblock %}
 {% block content %}
-            <div class="container py-5 h-100">
-                <div class="row d-flex justify-content-center align-items-center h-15">
-                    <div class="col-12 col-md-8 col-lg-6 col-xl-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="text-center">Login</h3>
-                            </div>
-                            <form method="POST">
-                                <div class="card-body">
-                                    {% csrf_token %}
-                                    {{ form }}
-                                </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
-                                </div>
-                            </form>
-                        </div>
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-15">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Login</h3>
                     </div>
+                    <form method="POST">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form }}
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+                            <a href="{% url 'password_reset' %}" class="btn btn-outline-warning" id='forgot'>Forgot your
+                                password?</a>
+                        </div>
+
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 {% endblock %}

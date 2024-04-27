@@ -9,30 +9,54 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10 gy-3">
+    <div class="col-md-10 gy-5">
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Employee</th>
+                <th>CNP</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Type</th>
                 <th>Reason</th>
                 <th>Approved Status</th>
+                <th class="text-center">Action</th>
             </tr>
             </thead>
             <tbody>
             {% for holiday in holiday_requests %}
                 <tr>
-                    <td>{{ holiday.employee_id }}</td>
+                    <td>{{ holiday.employee.first_name }} {{ holiday.employee.last_name }}</td>
+                    <td>{{ holiday.employee.cnp }}</td>
                     <td>{{ holiday.start_date }}</td>
                     <td>{{ holiday.end_date }}</td>
                     <td>{{ holiday.type }}</td>
                     <td>{{ holiday.reason }}</td>
                     <td>{{ holiday.approval_status }}</td>
+                    <td class="text-center">
+                        <form method="post" action="{% url 'approve-request' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ holiday.id }}">
+                            <button type="submit" class="btn btn-success" name="approve" value="1">Approve</button>
+                            <button type="submit" class="btn btn-danger" name="reject" value="1">Reject</button>
+                        </form>
+                    </td>
                 </tr>
-            </tbody>
+                </tbody>
             {% endfor %}
         </table>
     </div>
+    <script>
+
+        {#function httpGet(url) {#}
+        {#    let request = new XMLHttpRequest();#}
+        {#    request.open("GET", url, false);#}
+        {#    request.send(null);#}
+        {#    return request.responseText;#}
+        {# }#}
+
+        {#function approveHolidayRequest() {#}
+        {##}
+        {# }#}
+    </script>
 {% endblock %}

@@ -3,14 +3,14 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 
 from employee.filters import EmployeeFilter
 from employee.forms import EmployeeForm, EmployeeUpdateForm, HolidayRequestForm
-from employee.models import Employee, TimeRecord, HolidayRequest
+from employee.models import Employee, TimeRecord, HolidayRequest, Department
 
 
 # Create your views here.
@@ -106,6 +106,14 @@ class EmployeeDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def record_time_view(request):
+    # supervisor = Employee.objects.get(id=request.user.id)
+    # if supervisor.is_supervisor:
+    #     department = supervisor.departament
+    #     employees = Employee.objects.filter(departament=department, is_superuser=False)
+    # else:
+    #     # Tratează cazul în care utilizatorul autentificat nu este un supervizor
+    #     employees = []
+
     employees = Employee.objects.filter(is_superuser=False)
 
     # Obtinem zilele din luna curenta
@@ -167,17 +175,38 @@ class HolidayRequestCreateView(LoginRequiredMixin, CreateView):
     template_name = 'rest_holidays/add_leave_request.html'
     model = HolidayRequest
     form_class = HolidayRequestForm
-    success_url = reverse_lazy('add-leave-request')
+    success_url = reverse_lazy('home_page')
 
 
 class HolidayRequestUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'rest_holidays/approve_leave_request.html'
     model = HolidayRequest
     form_class = HolidayRequestForm
-    success_url = reverse_lazy('home_page')
+    success_url = reverse_lazy('list-requests')
 
 
 class HolidayRequestListView(LoginRequiredMixin, ListView):
     template_name = 'rest_holidays/holiday_request_list.html'
     model = HolidayRequest
     context_object_name = 'holiday_requests'
+
+    def get_queryset(self):
+        departaments = Department.objects.filter(supervisor=self.request.user)
+        members = Employee.objects.filter(department__in=departaments)
+        requests = HolidayRequest.objects.filter(employee__in=members)
+        return requests
+
+
+def approve_requests(request):
+    id = request.POST.get('id')
+    approve = int(request.POST.get('approve', 0))
+    print(id, approve)
+    holiday_request = HolidayRequest.objects.get(id=id)
+    if approve == 1:
+        print('approving')
+        holiday_request.approval_status = 'approved'
+    else:
+        print('rejecting')
+        holiday_request.approval_status = 'rejected'
+    holiday_request.save()
+    return redirect('list-requests')

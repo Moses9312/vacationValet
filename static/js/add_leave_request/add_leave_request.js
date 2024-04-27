@@ -29,9 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeField.value === 'co') {
             attachmentLabel.style.display = 'none';
             attachmentField.style.display = 'none';
+            attachmentField.required = false;
+
         } else {
             attachmentLabel.style.display = 'block';
             attachmentField.style.display = 'block';
+            attachmentField.required = true;
         }
     }
 
@@ -52,3 +55,4 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('id_end_date').addEventListener('change', calculateDays);
     }
 });
+
