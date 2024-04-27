@@ -29,7 +29,7 @@ class Employee(AbstractUser):
     notice_date = models.DateField(null=True, blank=True)
     address = models.TextField(blank=True, null=True)
     is_supervisor = models.BooleanField(default=False, blank=True, null=True)
-    days_off = models.IntegerField(default=21, null=False)
+    days_off = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -48,7 +48,7 @@ class Employee(AbstractUser):
 
     @property
     def supervisor_departments(self):
-        # Returnează lista de departamente pentru care angajatul este supraveghetor
+        # Returnează lista de departamente pentru care angajatul este spv
         return Department.objects.filter(supervisor=self)
 
     @property
