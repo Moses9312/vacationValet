@@ -3,7 +3,7 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
@@ -148,11 +148,26 @@ def record_time_view(request):
                 time_record.save()
 
     values = []
+    enableds = []
     for employee in employees:
         row = []
+        row_enabled = []
         for day in days:
+            today = timezone.datetime(year, month, day).date()
+            existing_holiday = HolidayRequest.objects.filter(employee=employee, approval_status='approved', start_date__lte=today,
+                                                             end_date__gte=today).first()
             existing_record: TimeRecord = TimeRecord.objects.filter(employee=employee, date__year=year,
                                                                     date__month=month, date__day=day).first()
+            if day == 25:
+                pass
+            if month == 4:
+                pass
+            print(f'Holiday for {employee} on {today} {existing_holiday is not None}')
+            if existing_holiday is not None:
+                row_enabled.append(False)
+            else:
+                row_enabled.append(True)
+
             if existing_record is not None:
                 seconds = existing_record.duration.total_seconds()
                 hours = seconds / 3600
@@ -165,11 +180,12 @@ def record_time_view(request):
             else:
                 row.append('')
         values.append(row)
+        enableds.append(row_enabled)
 
     return render(request, 'record_time/record_time.html',
                   {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
                    'weekend_days': weekend_days, 'years': [2024, 2025],
-                   'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]})
+                   'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'enableds': enableds})
 
 
 class HolidayRequestCreateView(LoginRequiredMixin, CreateView):

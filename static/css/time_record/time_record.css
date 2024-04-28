@@ -1,61 +1,65 @@
-#header-text {
-    padding: 10px;
-    background-color: whitesmoke;
-}
+/*#header-text {*/
+/*    padding: 10px;*/
+/*    background-color: whitesmoke;*/
+/*}*/
 
-/*#empl {*/
+/*.empl {*/
 /*    background-color: #0275d8;*/
 /*}*/
 
-.form-control {
-    width: 3rem !important;
-}
+/*.form-control {*/
+/*    width: 3rem !important;*/
+/*}*/
 
-.scrollable-content {
-    overflow-x: auto;
-    max-height: 400px;
-}
+/*.scrollable-content {*/
+/*    overflow-x: auto;*/
+/*    !*overflow-y: visible;*!*/
+/*    max-height: 27rem;*/
+/*}*/
 
-.sticky-header th:first-child {
-    position: sticky;
-    left: 0;
-    background-color: #f2f2f2;
-    z-index: 1;
-}
+/*.sticky-header th:first-child {*/
+/*    position: sticky;*/
+/*    left: 0;*/
+/*    background-color: #f2f2f2;*/
+/*    z-index: 1;*/
+/*}*/
 
-.sticky-header th:first-child,
-.sticky-content td:first-child {
-    width: 200px;
-}
+/*.sticky-header th:first-child,*/
+/*.sticky-content td:first-child {*/
+/*    width: 200px;*/
+/*}*/
 
-.sticky-content td:first-child {
-    position: sticky;
-    left: 0;
-    background-color: #f2f2f2;
-    z-index: 1;
-}
+/*.sticky-content td:first-child {*/
+/*    position: sticky;*/
+/*    left: 0;*/
+/*    background-color: #f2f2f2;*/
+/*    z-index: 1;*/
+/*}*/
 
-#weekdays {
-    background-color: gray;
-}
+/*.weekdays {*/
+/*    background-color: gray !important;*/
+/*}*/
 
-#year {
-    max-width: 5rem;
-}
+/*!*#year {*!*/
+/*!*    max-width: 5rem;*!*/
+/*!*}*!*/
 
-#month {
-    max-width: 5rem;
-    margin-right: 1rem;
-}
+/*!*#month {*!*/
+/*!*    max-width: 5rem;*!*/
+/*!*    margin-right: 1rem;*!*/
+/*!*}*!*/
 
-#load {
-    max-height: 3rem;
-}
+/*#load {*/
+/*    max-height: 3rem;*/
+/*}*/
 
-.sticky-header th{
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 1;
-}
+/*.sticky-header th {*/
+/*    position: sticky;*/
+/*    top: 0;*/
+/*    background-color: white;*/
+/*    z-index: 1;*/
+/*}*/
 
+/*!*.container-fluid{*!*/
+/*!*    padding: 5px;*!*/
+/*!*}*!*/

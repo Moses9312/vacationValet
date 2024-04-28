@@ -85,7 +85,7 @@ class HolidayRequest(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    attachment = models.FileField(upload_to='holiday_request/')
+    attachment = models.FileField(upload_to='holiday_request/', null=True, blank=True)
     reason = models.TextField(null=True, blank=True)
     approval_status = models.CharField(max_length=50, choices=APPROVAL_CHOICES, default='pending')
 

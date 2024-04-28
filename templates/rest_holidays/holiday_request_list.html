@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="col-md-10 gy-3">
-                <table class="table table-bordered">
+                <table class="table table-bordered rounded-table">
                     <thead>
                     <tr>
                         <th>Employee</th>
@@ -39,6 +39,7 @@
                         <th>Reason</th>
                         <th>Approved Status</th>
                         <th class="text-center">Action</th>
+                        <th>Attachment</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -79,6 +80,14 @@
                                 {% else %}
                                     <p>This request is processed ! </p>
                                 {% endif %}
+                            </td>
+                            <td>
+                                {% if holiday.attachment %}
+                                    <a href="{{ holiday.attachment.url }}" target="_blank" class="btn btn-info">View attachment</a>
+                                {% else %}
+                                    <a class="btn btn-secondary">No attachment</a>
+                                {% endif %}
+
                             </td>
                         </tr>
                         </tbody>

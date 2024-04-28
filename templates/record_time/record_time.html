@@ -6,71 +6,111 @@
 
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/time_record/time_record.css' %}">
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/5.0.0/css/fixedColumns.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js"></script>
 {% endblock %}
 
 {% block content %}
-    <form action="" method="get">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="col-2">
-                    <select name="year" id="year" class="form-select form-select-sm mb-1"
-                            aria-label=".form-select-lg example">
-                        {% for y in years %}
-                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-2">
-                    <select name="month" id="month" class="form-select form-select-sm mb-1"
-                            aria-label=".form-select-lg example">
-                        {% for m in months %}
-                            <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
-                        {% endfor %}
-                    </select>
+    <div class="col-12 d-flex justify-content-between mt-2">
+        <form action='' method="get">
+            <div class="container-fluid">
+                <div class="d-flex">
+                    <div class="d-flex align-items-center mx-1">
+                        <select name="year" id="year" class="form-select form-select-sm col-12"
+                                aria-label=".form-select-lg example">
+                            {% for y in years %}
+                                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center mx-1">
+                        <select name="month" id="month" class="form-select form-select-sm col-12"
+                                aria-label=".form-select-lg example">
+                            {% for m in months %}
+                                <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center mx-1">
+                        <button type="submit" class="btn btn-success col-12" id="load">Load</button>
+                    </div>
                 </div>
             </div>
+        </form>
+
+
+        <h2 class="text-center" id="header-text">Record Time</h2>
+        <div class="text-center" id="btn">
+            <button form="main_form" type="submit" class="btn btn-success text-center mx-1">Save</button>
+            <button form="main_form" type="reset" class="btn btn-outline-secondary mx-1">Undo</button>
+            {#            <a href="{% url 'record-time' %}"></a>#}
         </div>
-        <button type="submit" class="btn btn-success" id="load">Load</button>
-    </form>
-    <h2 class="text-center" id="header-text">Record Time</h2>
+
+    </div>
     <div class="scrollable-content">
-        <form method="POST">
+        <form method="POST" id="main_form">
             {% csrf_token %}
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="table">
                 <thead class="sticky-header">
                 <tr>
                     <th>Employee</th>
                     {% for day in days %}
-                        <th id="{% if day in weekend_days %}weekdays{% endif %}">{{ day }}</th>
+                        <th class="{% if day in weekend_days %}bg-body-secondary{% endif %}">{{ day }}</th>
                     {% endfor %}
                 </tr>
                 </thead>
                 <tbody class="sticky-content">
                 {% for employee in employees %}
                     <tr>
-                        <td id="emplrow">{{ employee.cnp }}-{{ employee.first_name }} {{ employee.last_name }}</td>
+                        <td class="text-nowrap" title="{{ employee.cnp }}"
+                            id="emplrow">{{ employee.first_name }} {{ employee.last_name }}</td>
                         {% for day in days %}
-                            <td id="{% if day in weekend_days %}weekdays{% endif %}">
-                                <label for="pontaj_{{ employee.id }}_{{ day }}"></label>
-                                {% with pos1=forloop.parentloop.counter0 %}
-                                    {% with pos2=forloop.counter0 %}
-                                        <input type="text" value="{{ values|index:pos1|index:pos2 }}"
+                            {% with pos1=forloop.parentloop.counter0 %}
+                                {% with pos2=forloop.counter0 %}
+                                    <td class="{% if day in weekend_days or not enableds|index:pos1|index:pos2 %}bg-body-secondary{% endif %}">
+                                        {#                                        <label for="pontaj_{{ employee.id }}_{{ day }}"></label>#}
+                                        <input style="width: 40px !important;" type="text"
+                                               value="{{ values|index:pos1|index:pos2 }}"
+                                                {#                                               {% if %}readonly{% endif %}#}
                                                name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
                                                id="pontaj_{{ employee.id }}_{{ day }}"
                                                class="form-control {% if day in weekend_days %}readonly{% endif %}"
-                                               {% if day in weekend_days %}readonly{% endif %}>
-                                    {% endwith %}
+                                               {% if day in weekend_days or not enableds|index:pos1|index:pos2 %}readonly{% endif %}>
+                                    </td>
                                 {% endwith %}
-                            </td>
+                            {% endwith %}
                         {% endfor %}
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <div class="text-center" id="btn">
-                <button type="submit" class="btn btn-success text-center" id="savebtn">Save</button>
-                <a href="{% url 'record-time' %}" class="btn btn-outline-secondary" id="vobtn">Undo</a>
-            </div>
         </form>
     </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                {#responsive:true,#}
+                autoWidth: false,
+                fixedHeader: true,
+                scrollX: true,
+                
+                "fixedColumns": {
+                    "leftColumns": 1,
+                },
+
+            });
+        });
+    </script>
 {% endblock %}
