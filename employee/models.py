@@ -93,6 +93,16 @@ class HolidayRequest(models.Model):
         return f'{self.employee} {self.start_date} {self.end_date}'
 
 
+@receiver(pre_save, sender=HolidayRequest)
+def update_days_off(sender, instance, **kwargs):
+    if instance.pk is None:  # Verificăm dacă este o cerere nouă de concediu
+        # Calculăm numărul de zile între start_date și end_date
+        num_days = (instance.end_date - instance.start_date).days + 1
+        # Actualizăm numărul de zile CO ale angajatului
+        instance.employee.days_off -= num_days
+        instance.employee.save()
+
+
 class TimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
