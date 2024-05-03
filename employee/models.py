@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.utils import timezone
 from django.dispatch import receiver
 
@@ -91,16 +91,6 @@ class HolidayRequest(models.Model):
 
     def __str__(self):
         return f'{self.employee} {self.start_date} {self.end_date}'
-
-
-@receiver(pre_save, sender=HolidayRequest)
-def update_days_off(sender, instance, **kwargs):
-    if instance.pk is None:  # Verificăm dacă este o cerere nouă de concediu
-        # Calculăm numărul de zile între start_date și end_date
-        num_days = (instance.end_date - instance.start_date).days + 1
-        # Actualizăm numărul de zile CO ale angajatului
-        instance.employee.days_off -= num_days
-        instance.employee.save()
 
 
 class TimeRecord(models.Model):
