@@ -53,7 +53,6 @@
         <div class="text-center" id="btn">
             <button form="main_form" type="submit" class="btn btn-success text-center mx-1">Save</button>
             <button form="main_form" type="reset" class="btn btn-outline-secondary mx-1">Undo</button>
-            {#            <a href="{% url 'record-time' %}"></a>#}
         </div>
 
     </div>
@@ -78,7 +77,6 @@
                             {% with pos1=forloop.parentloop.counter0 %}
                                 {% with pos2=forloop.counter0 %}
                                     <td class="{% if day in weekend_days or not enableds|index:pos1|index:pos2 %}bg-body-secondary{% endif %}">
-                                        {#                                        <label for="pontaj_{{ employee.id }}_{{ day }}"></label>#}
                                         <input style="width: 40px !important;" type="text"
                                                value="{{ values|index:pos1|index:pos2 }}"
                                                 {#                                               {% if %}readonly{% endif %}#}
@@ -105,7 +103,7 @@
                 autoWidth: false,
                 fixedHeader: true,
                 scrollX: true,
-                order:[0, 'asc'],
+                order: [0, 'asc'],
                 "fixedColumns": {
                     "leftColumns": 1,
                 },

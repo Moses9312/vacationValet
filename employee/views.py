@@ -2,11 +2,13 @@ import calendar
 import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
+from pyexpat.errors import messages
 
 from employee.filters import EmployeeFilter, HolidayFilter
 from employee.forms import EmployeeForm, EmployeeUpdateForm, HolidayRequestForm
@@ -70,9 +72,6 @@ class EmployeeListView(LoginRequiredMixin, ListView):
     template_name = 'employee/list_of_employees.html'
     model = Employee
     context_object_name = 'all_employees'
-
-    def get_queryset(self):
-        return Employee.objects.filter(is_active=True)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -235,27 +234,10 @@ def approve_requests(request):
     holiday_request = HolidayRequest.objects.get(id=id)
     if approve == 1:
         holiday_request.approval_status = 'approved'
+
     else:
         holiday_request.approval_status = 'rejected'
+
     holiday_request.save()
+
     return redirect('list-requests')
-
-
-# def update_days_off(request):
-#     holiday_request_id = request.POST.get('id')
-#     holiday_request = HolidayRequest.objects.get(id=holiday_request_id)
-#
-#     if holiday_request.approval_status == 'approved':
-#         num_days = (holiday_request.end_date - holiday_request.start_date).days + 1
-#
-#         # Obține ID-ul angajatului asociat cererii de concediu
-#         employee_id = holiday_request.employee_id
-#
-#         # Obține obiectul Employee asociat cererii de concediu
-#         employee = Employee.objects.get(id=employee_id)
-#
-#         # Actualizează numărul de zile de concediu al angajatului
-#         employee.days_off -= num_days
-#         employee.save()
-#
-#     return redirect('list-requests')

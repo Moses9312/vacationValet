@@ -65,21 +65,21 @@
                                 {% endfor %}
                             </td>
                             <td class="text-center">
-                                {% if holiday.approval_status == 'pending' %}
-                                    <form method="post" action="{% url 'approve-request' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="id" value="{{ holiday.id }}">
-                                        <button type="submit" class="btn btn-success btn-approve" name="approve"
-                                                value="1">
-                                            Approve
-                                        </button>
-                                        <button type="submit" class="btn btn-danger btn-reject" name="reject" value="1">
-                                            Reject
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p>This request is processed ! </p>
-                                {% endif %}
+                                    {% if holiday.approval_status == 'pending' %}
+                                        <form method="post" action="{% url 'approve-request' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{ holiday.id }}">
+                                            <button type="submit" class="btn btn-success btn-approve" name="approve"
+                                                    value="1">
+                                                Approve
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-reject" name="reject" value="1">
+                                                Reject
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p>This request is processed ! </p>
+                                    {% endif %}
                             </td>
                             <td>
                                 {% if holiday.attachment %}
