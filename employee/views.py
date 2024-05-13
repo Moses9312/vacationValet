@@ -73,13 +73,50 @@ class EmployeeListView(LoginRequiredMixin, ListView):
     model = Employee
     context_object_name = 'all_employees'
 
+    # def get_queryset(self):
+    #     current_username = self.request.user.username
+    #     print(current_username)
+    #     current_employee = get_object_or_404(Employee, username=current_username)
+    #     print(current_employee)
+    #     department = current_employee.departament
+    #     print(department)
+    #     employees = Employee.objects.filter(departament=department, is_superuser=False)
+    #     print(employees)
+    #     return employees
+
     def get_context_data(self, **kwargs):
+        # data = super().get_context_data(**kwargs)
+        #
+        # employees = Employee.objects.filter(is_superuser=False)
+        # myfilter = EmployeeFilter(self.request.GET, queryset=employees)
+        # employees = myfilter.qs
+        # data['all_employees'] = employees
+        # data['filter'] = myfilter.form
+        #
+        # return data
         data = super().get_context_data(**kwargs)
 
-        employees = Employee.objects.filter(is_superuser=False)
+        # Obține utilizatorul curent și angajatul asociat
+        current_username = self.request.user.username
+        current_employee = get_object_or_404(Employee, username=current_username)
+
+        # Obține departamentul utilizatorului curent
+        department = current_employee.departament
+
+        # Filtrarea angajaților după departamentul utilizatorului curent
+        if current_employee.is_superuser:
+            # Dacă este superutilizator, obține toți angajații
+            employees = Employee.objects.filter(is_superuser=False)
+        else:
+            # Dacă nu este superutilizator, obține departamentul utilizatorului curent
+            department = current_employee.departament
+
+            # Filtrarea angajaților după departamentul utilizatorului curent
+            employees = Employee.objects.filter(departament=department, is_superuser=False)
+
+        # Crearea filtrului și actualizarea datelor din context
         myfilter = EmployeeFilter(self.request.GET, queryset=employees)
-        employees = myfilter.qs
-        data['all_employees'] = employees
+        data['all_employees'] = myfilter.qs
         data['filter'] = myfilter.form
 
         return data
