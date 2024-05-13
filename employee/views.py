@@ -94,7 +94,7 @@ class EmployeeListView(LoginRequiredMixin, ListView):
 
         # Filtrarea angajaților după departamentul utilizatorului curent
         if current_employee.is_superuser:
-            # Dacă este superutilizator, obține toți angajații
+            # Dacă este superuser, obține toți angajații
             employees = Employee.objects.filter(is_superuser=False)
         else:
             # Dacă nu este superuser, obține departamentul utilizatorului curent
