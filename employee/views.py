@@ -73,17 +73,6 @@ class EmployeeListView(LoginRequiredMixin, ListView):
     model = Employee
     context_object_name = 'all_employees'
 
-    # def get_queryset(self):
-    #     current_username = self.request.user.username
-    #     print(current_username)
-    #     current_employee = get_object_or_404(Employee, username=current_username)
-    #     print(current_employee)
-    #     department = current_employee.departament
-    #     print(department)
-    #     employees = Employee.objects.filter(departament=department, is_superuser=False)
-    #     print(employees)
-    #     return employees
-
     def get_context_data(self, **kwargs):
         # data = super().get_context_data(**kwargs)
         #
@@ -108,7 +97,7 @@ class EmployeeListView(LoginRequiredMixin, ListView):
             # Dacă este superutilizator, obține toți angajații
             employees = Employee.objects.filter(is_superuser=False)
         else:
-            # Dacă nu este superutilizator, obține departamentul utilizatorului curent
+            # Dacă nu este superuser, obține departamentul utilizatorului curent
             department = current_employee.departament
 
             # Filtrarea angajaților după departamentul utilizatorului curent
@@ -244,22 +233,40 @@ class HolidayRequestListView(LoginRequiredMixin, ListView):
     model = HolidayRequest
     context_object_name = 'holiday_requests'
 
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return HolidayRequest.objects.all()
-        else:
-            departaments = Department.objects.filter(supervisor=self.request.user)
-            members = Employee.objects.filter(department__in=departaments)
-            requests = HolidayRequest.objects.filter(employee__in=members)
-            return requests
+    # def get_queryset(self):
+    #     if self.request.user.is_superuser:
+    #         return HolidayRequest.objects.all()
+    #     else:
+    #         departaments = Department.objects.filter(supervisor=self.request.user)
+    #         members = Employee.objects.filter(department__in=departaments)
+    #         requests = HolidayRequest.objects.filter(employee__in=members)
+    #         return requests
 
     def get_context_data(self, **kwargs):
+
         data = super().get_context_data(**kwargs)
 
-        requests = HolidayRequest.objects.all()
-        myfilter = HolidayFilter(self.request.GET, queryset=requests)
-        requests = myfilter.qs
-        data['holiday_requests'] = requests
+        current_username = self.request.user.username
+        current_employee = get_object_or_404(Employee, username=current_username)
+
+        if current_employee.is_superuser:
+            # Dacă utilizatorul este superutilizator, obține toate cererile de concediu
+            holiday_requests = HolidayRequest.objects.all()
+        else:
+            # Obține departamentul utilizatorului curent
+            department = current_employee.departament
+
+            # Verifică dacă utilizatorul curent este supervizor în departamentul său
+            if department.supervisor == current_employee:
+                # Dacă este supervizor, obține cererile de concediu ale angajaților din departamentul său
+                holiday_requests = HolidayRequest.objects.filter(employee__departament=department)
+            else:
+                # Dacă nu este supervizor, nu poate accesa cererile de concediu ale departamentului său
+                holiday_requests = HolidayRequest.objects.none()
+
+        # Crearea filtrului și actualizarea datelor din context
+        myfilter = HolidayFilter(self.request.GET, queryset=holiday_requests)
+        data['holiday_requests'] = myfilter.qs
         data['filter'] = myfilter.form
 
         return data
