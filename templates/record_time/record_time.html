@@ -44,6 +44,12 @@
                     <div class="d-flex align-items-center mx-1">
                         <button type="submit" class="btn btn-success col-12" id="load">Load</button>
                     </div>
+{#                        <form method="get" action="{% url 'export_timesheet' %}">#}
+{#                            <input type="hidden" name="month" value="{{ month }}">#}
+{#                            <input type="hidden" name="year" value="{{ year }}">#}
+{#                            <button type="submit">Exportă în Excel</button>#}
+{#                        </form>#}
+                    <a href="{% url 'export_timesheet' %}?month={{ month }}&year={{ year }}" class="btn btn-primary">Exportă în Excel</a>
                 </div>
             </div>
         </form>

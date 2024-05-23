@@ -12,5 +12,6 @@ urlpatterns = [
     path('add-leave-request/', views.HolidayRequestCreateView.as_view(), name='add-leave-request'),
     path('approve-leave-request/<int:pk>/', views.HolidayRequestUpdateView.as_view(), name='approve-leave-request'),
     path('list_requests/', views.HolidayRequestListView.as_view(), name='list-requests'),
-    path('approve-request', views.approve_requests, name='approve-request'),
+    path('approve-request/', views.approve_requests, name='approve-request'),
+    path('export_timesheet/', views.export_timesheet_to_excel, name='export_timesheet'),
 ]

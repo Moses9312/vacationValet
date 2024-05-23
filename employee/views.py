@@ -1,9 +1,11 @@
 import calendar
 import datetime
+from io import BytesIO
 
+import openpyxl
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -166,8 +168,8 @@ def record_time_view(request):
                 time_record, created = TimeRecord.objects.get_or_create(employee_id=employee_id_str, date=date_str)
                 if hours != '':
                     time_record.duration = datetime.timedelta(hours=float(hours))
-                    print(employee_id_and_date)
-                    print(f'logged {hours} hours')
+                    # print(employee_id_and_date)
+                    # print(f'logged {hours} hours')
                 else:
                     time_record.duration = datetime.timedelta(hours=0)
                 time_record.save()
@@ -188,7 +190,7 @@ def record_time_view(request):
                 pass
             if month == 4:
                 pass
-            print(f'Holiday for {employee} on {today} {existing_holiday is not None}')
+            # print(f'Holiday for {employee} on {today} {existing_holiday is not None}')
             if existing_holiday is not None:
                 row_enabled.append(False)
             else:
@@ -212,6 +214,61 @@ def record_time_view(request):
                   {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
                    'weekend_days': weekend_days, 'years': [2024, 2025],
                    'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'enableds': enableds})
+
+
+@login_required
+def export_timesheet_to_excel(request):
+    current_user = request.user
+    try:
+        current_employee = Employee.objects.get(username=current_user.username)
+        department = current_employee.departament
+    except Employee.DoesNotExist:
+        return HttpResponse("Employee not found", status=404)
+
+    if current_user.is_superuser:
+        employees = Employee.objects.filter(is_superuser=False)
+    else:
+        employees = Employee.objects.filter(departament=department, is_superuser=False)
+
+    today = timezone.now()
+    month = int(request.GET.get('month', today.month))
+    year = int(request.GET.get('year', today.year))
+
+    num_days = calendar.monthrange(year, month)[1]
+    days = [i for i in range(1, num_days + 1)]
+
+    # Crearea de workbook
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Pontaj"
+
+    # Adaugarea capului de tabel
+    headers = ['Employee', 'Department'] + days
+    ws.append(headers)
+
+    for employee in employees:
+        full_name = f"{employee.first_name} {employee.last_name}"
+        department = employee.departament.name  # presupunem că departamentul are un câmp 'name'
+        row = [full_name, department]
+        for day in days:
+            today = datetime.date(year, month, day)
+            existing_record = TimeRecord.objects.filter(employee=employee, date__year=year, date__month=month, date__day=day).first()
+            if existing_record:
+                hours = existing_record.duration.total_seconds() / 3600
+                row.append(hours)
+            else:
+                row.append('')
+        ws.append(row)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+
+    response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="pontaj_{month}_{year}.xlsx"'
+
+    return response
 
 
 class HolidayRequestCreateView(LoginRequiredMixin, CreateView):
