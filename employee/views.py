@@ -243,27 +243,32 @@ def export_timesheet_to_excel(request):
     ws.title = "Pontaj"
 
     # Adaugarea capului de tabel
-    headers = ['Employee', 'Department'] + days
+    headers = ['Employee', 'Department'] + days + ['Total Hours']
     ws.append(headers)
 
     for employee in employees:
         full_name = f"{employee.first_name} {employee.last_name}"
-        department = employee.departament.name  # presupunem că departamentul are un câmp 'name'
+        department = employee.departament.name
         row = [full_name, department]
+        total_hours = 0
+
         for day in days:
             today = datetime.date(year, month, day)
-            existing_record = TimeRecord.objects.filter(employee=employee, date__year=year, date__month=month, date__day=day).first()
+            existing_record = TimeRecord.objects.filter(employee=employee, date__year=year, date__month=month,
+                                                        date__day=day).first()
             if existing_record:
                 hours = existing_record.duration.total_seconds() / 3600
                 row.append(hours)
+                total_hours += hours
             else:
                 row.append('')
+
+        row.append(total_hours)
         ws.append(row)
 
     output = BytesIO()
     wb.save(output)
     output.seek(0)
-
 
     response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="pontaj_{month}_{year}.xlsx"'
