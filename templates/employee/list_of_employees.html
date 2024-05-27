@@ -27,8 +27,8 @@
                         <thead>
                         <tr>
                             <th>No.</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Name</th>
+{#                            <th>Last Name</th>#}
                             <th>CNP</th>
                             <th>Email</th>
                             <th>Departament</th>
@@ -36,7 +36,7 @@
                             <th>End Date</th>
                             <th>Notice Date</th>
                             <th>Address</th>
-                            <th>Is Supervizor</th>
+{#                            <th>Is Supervizor</th>#}
                             <th>Supervizor on:</th>
                             <th>Days Off</th>
                             <th>Actions</th>
@@ -46,8 +46,8 @@
                         {% for employee in all_employees %}
                             <tr>
                                 <td>{{ forloop.counter}}</td>
-                                <td>{{ employee.first_name }}</td>
-                                <td>{{ employee.last_name }}</td>
+                                <td>{{ employee.full_name }}</td>
+{#                                <td>{{ employee.last_name }}</td>#}
                                 <td>{{ employee.cnp }}</td>
                                 <td>{{ employee.email }}</td>
                                 <td>{{ employee.departament }}</td>
@@ -55,13 +55,13 @@
                                 <td>{{ employee.end_date|date:'d/m/Y' }}</td>
                                 <td>{{ employee.notice_date|date:'d/m/Y' }}</td>
                                 <td>{{ employee.address }}</td>
-                                <td>
-                                    {% if employee.is_supervisor %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
+{#                                <td>#}
+{#                                    {% if employee.is_supervisor %}#}
+{#                                        Yes#}
+{#                                    {% else %}#}
+{#                                        No#}
+{#                                    {% endif %}#}
+{#                                </td>#}
                                 <td>
                                     {% for department in employee.supervisor_departments %}
                                         {{ department.name }}

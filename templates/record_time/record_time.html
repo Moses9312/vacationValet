@@ -49,13 +49,11 @@
             </div>
         </form>
 
-
         <h2 class="text-center" id="header-text">Record Time</h2>
         <div class="text-center" id="btn">
             <button form="main_form" type="submit" class="btn btn-success text-center mx-1">Save</button>
             <button form="main_form" type="reset" class="btn btn-outline-secondary mx-1">Undo</button>
         </div>
-
     </div>
     <div class="scrollable-content">
         <form method="POST" id="main_form">
@@ -78,13 +76,16 @@
                             {% with pos1=forloop.parentloop.counter0 %}
                                 {% with pos2=forloop.counter0 %}
                                     <td class="{% if day in weekend_days or not enableds|index:pos1|index:pos2 %}bg-body-secondary{% endif %}">
-                                        <input style="width: 40px !important;" type="text"
-                                               value="{{ values|index:pos1|index:pos2 }}"
-                                                {#                                               {% if %}readonly{% endif %}#}
-                                               name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
-                                               id="pontaj_{{ employee.id }}_{{ day }}"
-                                               class="form-control {% if day in weekend_days %}readonly{% endif %}"
-                                               {% if day in weekend_days or not enableds|index:pos1|index:pos2 %}readonly{% endif %}>
+                                        {% if holiday_requests|index:employee.id|index:day %}
+                                            <span>{{ holiday_requests|index:employee.id|index:day }}</span>
+                                        {% else %}
+                                            <input style="width: 45px !important;" type="text"
+                                                   value="{{ values|index:pos1|index:pos2 }}"
+                                                   name="pontaj_{{ employee.id }}_{{ year }}-{{ month }}-{{ day }}"
+                                                   id="pontaj_{{ employee.id }}_{{ day }}"
+                                                   class="form-control {% if day in weekend_days %}readonly{% endif %}"
+                                                   {% if day in weekend_days or not enableds|index:pos1|index:pos2 %}readonly{% endif %}>
+                                        {% endif %}
                                     </td>
                                 {% endwith %}
                             {% endwith %}
@@ -96,11 +97,9 @@
         </form>
     </div>
 
-
     <script>
         $(document).ready(function () {
             $('#table').DataTable({
-                {#responsive:true,#}
                 autoWidth: false,
                 fixedHeader: true,
                 scrollX: true,
@@ -108,7 +107,6 @@
                 "fixedColumns": {
                     "leftColumns": 1,
                 },
-
             });
         });
     </script>

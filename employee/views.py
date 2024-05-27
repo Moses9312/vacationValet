@@ -133,27 +133,22 @@ class EmployeeDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def record_time_view(request):
-    current_user = request.user  # Utilizatorul logat
+    current_user = request.user
     current_employee = Employee.objects.get(username=current_user.username)
     department = current_employee.departament
 
     if current_user.is_superuser:
-        # Dacă utilizatorul este admin, obținem toti angajatii
         employees = Employee.objects.filter(is_superuser=False)
     else:
-        # Altfel, obținem angajații din același departament cu angajatul curent
         employees = Employee.objects.filter(departament=department, is_superuser=False)
 
-    # Obtinem zilele din luna curenta
     today = timezone.now()
-
     month = int(request.GET.get('month', today.month))
     year = int(request.GET.get('year', today.year))
 
     num_days = calendar.monthrange(year, month)[1]
     days = [i for i in range(1, num_days + 1)]
 
-    # Calcul zile de weekend din luna curenta
     first_day = datetime.date(year, month, 1)
     last_day = datetime.date(year, month, num_days)
     weekend_days = [day for day in range(first_day.day, last_day.day + 1) if
@@ -168,33 +163,30 @@ def record_time_view(request):
                 time_record, created = TimeRecord.objects.get_or_create(employee_id=employee_id_str, date=date_str)
                 if hours != '':
                     time_record.duration = datetime.timedelta(hours=float(hours))
-                    # print(employee_id_and_date)
-                    # print(f'logged {hours} hours')
                 else:
                     time_record.duration = datetime.timedelta(hours=0)
                 time_record.save()
 
     values = []
     enableds = []
+    holiday_requests = {}
     for employee in employees:
         row = []
         row_enabled = []
+        holidays = {}
         for day in days:
-            today = timezone.datetime(year, month, day).date()
+            today = datetime.date(year, month, day)
             existing_holiday = HolidayRequest.objects.filter(employee=employee, approval_status='approved',
                                                              start_date__lte=today,
                                                              end_date__gte=today).first()
-            existing_record: TimeRecord = TimeRecord.objects.filter(employee=employee, date__year=year,
-                                                                    date__month=month, date__day=day).first()
-            if day == 25:
-                pass
-            if month == 4:
-                pass
-            # print(f'Holiday for {employee} on {today} {existing_holiday is not None}')
+            existing_record = TimeRecord.objects.filter(employee=employee, date__year=year,
+                                                        date__month=month, date__day=day).first()
             if existing_holiday is not None:
                 row_enabled.append(False)
+                holidays[day] = existing_holiday.get_type_display()
             else:
                 row_enabled.append(True)
+                holidays[day] = ''
 
             if existing_record is not None:
                 seconds = existing_record.duration.total_seconds()
@@ -209,11 +201,12 @@ def record_time_view(request):
                 row.append('')
         values.append(row)
         enableds.append(row_enabled)
+        holiday_requests[employee.id] = holidays
 
     return render(request, 'record_time/record_time.html',
                   {'employees': employees, 'year': year, 'month': month, 'days': days, 'values': values,
                    'weekend_days': weekend_days, 'years': [2024, 2025],
-                   'months': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'enableds': enableds})
+                   'months': list(range(1, 13)), 'enableds': enableds, 'holiday_requests': holiday_requests})
 
 
 @login_required
@@ -256,7 +249,13 @@ def export_timesheet_to_excel(request):
             today = datetime.date(year, month, day)
             existing_record = TimeRecord.objects.filter(employee=employee, date__year=year, date__month=month,
                                                         date__day=day).first()
-            if existing_record:
+            existing_holiday = HolidayRequest.objects.filter(employee=employee, approval_status='approved',
+                                                             start_date__lte=today,
+                                                             end_date__gte=today).first()
+            if existing_holiday:
+                holiday_type = existing_holiday.get_type_display()
+                row.append(holiday_type)
+            elif existing_record:
                 hours = existing_record.duration.total_seconds() / 3600
                 row.append(hours)
                 total_hours += hours
