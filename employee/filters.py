@@ -44,7 +44,7 @@ class HolidayFilter(django_filters.FilterSet):
     approval_status = django_filters.ChoiceFilter(label='Approval Status', choices=HolidayRequest.APPROVAL_CHOICES,
                                                   widget=forms.Select(attrs={'class': 'form-control'}))
 
-    def filter_employee(self, queryset, value):
+    def filter_employee(self, queryset, name, value):
         return queryset.filter(employee__first_name__icontains=value) | queryset.filter(
             employee__last_name__icontains=value)
 

@@ -143,7 +143,7 @@ def record_time_view(request):
         employees = Employee.objects.filter(departament=department, is_superuser=False)
 
     today = timezone.now()
-    month = int(request.GET.get('month', today.month))
+    month = int(request.GET.get('month', today.month + 1))
     year = int(request.GET.get('year', today.year))
 
     num_days = calendar.monthrange(year, month)[1]
